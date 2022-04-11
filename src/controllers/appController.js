@@ -11,6 +11,7 @@ const { ObjectId } = require("bson");
  */
 exports.userProfile = async (req, res) => {
   try {
+    //   change to req.user.role to user.id then check role using doc.
     if (req.user.role == "admin") {
       if (req.params.id != undefined) {
         const udata = await mongoose
@@ -25,7 +26,7 @@ exports.userProfile = async (req, res) => {
     if (req.user.role == "customer") {
       const data = await mongoose
         .model("user")
-        .findOne({ _id: ObjectId(req.user.userId) });
+        .findOne({ _id: req.user.userId });
       return res.send(utils.responseMsg(false, true, data));
     }
 
@@ -78,6 +79,8 @@ exports.userUpdate = async (req, res) => {
     }
     return res.status(401).send(utils.responseMsg(errorMsg.unauthorized));
   } catch (err) {
+    if (err.isJoi)
+      return res.status(422).send(utils.responseMsg(true, false, err.details));
     console.log("ERROR", err.stack);
     return res
       .status(400)
@@ -85,3 +88,39 @@ exports.userUpdate = async (req, res) => {
   }
 };
 
+/**
+ * @description user delete controller.
+ * @function userDelete
+ */
+exports.userDelete = async (req, res) => {
+  try {
+    const userData = await mongoose.model("user").findOne({ _id: ObjectId(req.user.userId) });
+    if(userData) {
+        if(userData.role == "admin") {
+            const uData = await mongoose
+                .model("user")
+                .findOne({ _id: ObjectId(req.params.id) });
+        
+                console.log(uData);
+            if (uData != null) {
+                await mongoose.model("user").deleteOne({ _id: uData._id });
+                const msg = "User Deleted";
+                return res.send(utils.responseMsg(false, true, msg));
+            }
+            res.status(404).send(utils.responseMsg(errorMsg.dataNotFound));
+        }
+
+        if(userData.role == "customer") {
+            await mongoose.model("user").deleteOne({ _id: req.user.userId });
+            const msg = "User Deleted";
+            return res.send(utils.responseMsg(false, true, msg));
+        }
+    } 
+    return res.status(401).send(utils.responseMsg(errorMsg.unauthorized)); 
+  } catch (err) {
+    console.log("ERROR", err.stack);
+    return res
+      .status(500)
+      .send(utils.responseMsg(errorMsg.internalServerError));
+  }
+};
