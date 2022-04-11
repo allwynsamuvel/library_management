@@ -99,6 +99,6 @@ exports.signup = async (req, res) => {
     if (err.isJoi)
       return res.status(422).send(utils.responseMsg(true, false, err.details));
     console.error("ERROR", err.stack);
-    return res.status(500).send(utils.responseMsg(true, false, err.errors));
+    return res.status(422).send(utils.responseMsg(true, false, err.errors));
   }
 };
