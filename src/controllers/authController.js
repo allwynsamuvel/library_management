@@ -23,6 +23,14 @@ const { joiSchema } = require("../helpers/joi_validation");
       req.user = token_data;
     }
 
+    if(req.user != undefined && req.user.role == "customer") {
+      const msg = {
+        error: "unauthorized",
+        message: "Customer not allowed create other user"
+      }
+      return res.status(401).send(utils.responseMsg(true, false, msg));
+    }
+
     doc.role = doc.role.toLowerCase();
     if (doc.role == "admin") {
       if(req.user == undefined || req.user.role != "admin") { 
