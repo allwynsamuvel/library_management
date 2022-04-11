@@ -18,7 +18,7 @@ exports.login = async (req, res) => {
     if (data) {
       const result = await bcrypt.compare(req.body.password, data.password);
       if (result) {
-        const user = { email: data.email, role: data.role };
+        const user = { userId: data._id, role: data.role };
         const accessToken = authService.createToken(user);
         const msgObj = {
           message: `login success (${data.name} as ${data.role})`,
