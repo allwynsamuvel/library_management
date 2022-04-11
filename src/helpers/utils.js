@@ -1,3 +1,5 @@
+const jwt = require("jsonwebtoken");
+const errorMsg = require("../helpers/errorMessage").errorMessages;
 /**
  * Pass Object Or Array Or String Or Number and find if it is empty or not, Null Or Undefined also gives false
  * @param  {Any} data data to be checked against
@@ -35,7 +37,7 @@ exports.checkIfDataExists = (data) => {
  * @param {Boolean} paginated
  * @returns {Object}
  */
-exports.responseMsg = (errMsg, successStatus, data, paginated) => {
+const responseMsg = (errMsg, successStatus, data, paginated) => {
   const responseObj = {
     success: successStatus || false,
     error: errMsg || null,
@@ -61,4 +63,34 @@ exports.responseMsg = (errMsg, successStatus, data, paginated) => {
   }
 
   return responseObj;
+};
+
+exports.responseMsg = responseMsg;
+
+/**
+ * @description token verification.
+ * @function tokenVerify
+ */
+exports.tokenVerify = (role) => { 
+  return (req, res, next) => {
+    const bearerHeader = req.headers["authorization"];
+    if (bearerHeader == null) return res.status(401).send(responseMsg(errorMsg.unauthorized));
+    const token = bearerHeader.split(" ")[1];
+  
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+      if (err) return res.status(401).send(responseMsg(errorMsg.unauthorized));
+  
+      if (role == "admin") {
+        if (user.role == "admin") {
+          req.user = user;
+          next();
+        } else return res.status(401).send(responseMsg(errorMsg.unauthorized));
+      }
+  
+      if (role != "admin") {
+        req.user = user;
+        next();
+      }
+    });
+  };
 };
