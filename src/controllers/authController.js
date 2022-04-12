@@ -48,6 +48,7 @@ exports.signup = async (req, res) => {
     if (doc.error) throw doc.error;
     doc.phone = parseInt(doc.phone);
 
+    if(doc.role == undefined) doc.role = "customer";
     doc.role = doc.role.toLowerCase();
     if (doc.role == "admin") {
       if (req.user == undefined || req.user.role != "admin") {
@@ -64,7 +65,6 @@ exports.signup = async (req, res) => {
     });
     if (userExist == null) {
       doc.password = await bcrypt.hash(doc.password, 10);
-      if(doc.role == undefined) doc.role = "customer";
       const userData = await mongoose.model("user").create(doc);
 
       const msg = {
