@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 const { joiSchema } = require("../helpers/joi_validation");
 
 /**
- * @description userProfile controller.
+ * @description userProfile controller get data of users profile.
  * @function userProfile
  */
 exports.userProfile = async (req, res) => {
@@ -15,20 +15,23 @@ exports.userProfile = async (req, res) => {
         const udata = await mongoose
           .model("user")
           .findOne({ _id: req.params.id });
-        if(udata) return res.send(utils.responseMsg(false, true, udata));
-        else return res.status(404).send(utils.responseMsg(errorMsg.dataNotFound));
+        if (udata) return res.send(utils.responseMsg(false, true, udata));
+        else
+          return res.status(404).send(utils.responseMsg(errorMsg.dataNotFound));
       }
       const data = await mongoose.model("user").find();
-      if(data) return res.send(utils.responseMsg(false, true, data));
-      else return res.status(404).send(utils.responseMsg(errorMsg.dataNotFound));
+      if (data) return res.send(utils.responseMsg(false, true, data));
+      else
+        return res.status(404).send(utils.responseMsg(errorMsg.dataNotFound));
     }
 
     if (req.user.role == "customer") {
       const data = await mongoose
         .model("user")
         .findOne({ _id: req.user.userId });
-      if(data) return res.send(utils.responseMsg(false, true, data));
-      else return res.status(404).send(utils.responseMsg(errorMsg.dataNotFound));
+      if (data) return res.send(utils.responseMsg(false, true, data));
+      else
+        return res.status(404).send(utils.responseMsg(errorMsg.dataNotFound));
     }
 
     return res.status(401).send(utils.responseMsg(errorMsg.unauthorized));
@@ -39,15 +42,15 @@ exports.userProfile = async (req, res) => {
 };
 
 /**
- * @description userUpdate controller.
+ * @description userUpdate controller update users data.
  * @function userUpdate
  */
 exports.userUpdate = async (req, res) => {
   try {
-    if(req.body.phone != undefined) req.body.phone = req.body.phone.toString();
+    if (req.body.phone != undefined) req.body.phone = req.body.phone.toString();
     const doc = await joiSchema.validateAsync(req.body);
     if (doc.error) throw doc.error;
-    if(doc.phone != undefined) doc.phone = parseInt(doc.phone);
+    if (doc.phone != undefined) doc.phone = parseInt(doc.phone);
 
     const userId = req.user.userId;
     const userData = await mongoose.model("user").findOne({ _id: userId });
@@ -89,7 +92,7 @@ exports.userUpdate = async (req, res) => {
 };
 
 /**
- * @description user delete controller.
+ * @description userDelete controller delete users profile.
  * @function userDelete
  */
 exports.userDelete = async (req, res) => {
@@ -107,9 +110,7 @@ exports.userDelete = async (req, res) => {
     return res.status(401).send(utils.responseMsg(errorMsg.unauthorized));
   } catch (err) {
     console.log("ERROR", err.stack);
-    return res
-      .status(500)
-      .send(utils.responseMsg(true, false, err));
+    return res.status(500).send(utils.responseMsg(true, false, err));
   }
 };
 
@@ -185,7 +186,7 @@ exports.deleteBook = async (req, res) => {
 };
 
 /**
- * @description book search controller.
+ * @description book search controller search book based on option.
  * @function bookSearch
  */
 exports.bookSearch = async (req, res) => {
