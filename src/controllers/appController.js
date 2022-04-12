@@ -15,17 +15,20 @@ exports.userProfile = async (req, res) => {
         const udata = await mongoose
           .model("user")
           .findOne({ _id: req.params.id });
-        return res.send(utils.responseMsg(false, true, udata));
+        if(udata) return res.send(utils.responseMsg(false, true, udata));
+        else return res.status(404).send(utils.responseMsg(errorMsg.dataNotFound));
       }
       const data = await mongoose.model("user").find();
-      return res.send(utils.responseMsg(false, true, data));
+      if(data) return res.send(utils.responseMsg(false, true, data));
+      else return res.status(404).send(utils.responseMsg(errorMsg.dataNotFound));
     }
 
     if (req.user.role == "customer") {
       const data = await mongoose
         .model("user")
         .findOne({ _id: req.user.userId });
-      return res.send(utils.responseMsg(false, true, data));
+      if(data) return res.send(utils.responseMsg(false, true, data));
+      else return res.status(404).send(utils.responseMsg(errorMsg.dataNotFound));
     }
 
     return res.status(401).send(utils.responseMsg(errorMsg.unauthorized));
