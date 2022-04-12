@@ -1,8 +1,6 @@
 const authService = require("../services/authServices");
-const errorMsg = require("../helpers/errorMessage").errorMessages;
 const utils = require("../helpers/utils");
 const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { joiSchema } = require("../helpers/joi_validation");
 
@@ -31,9 +29,7 @@ exports.login = async (req, res) => {
     return res.status(401).send(utils.responseMsg(null, true, msg));
   } catch (err) {
     console.log("ERROR", err.stack);
-    return res
-      .status(500)
-      .send(utils.responseMsg(true, false, err));
+    return res.status(500).send(utils.responseMsg(true, false, err));
   }
 };
 
@@ -48,7 +44,7 @@ exports.signup = async (req, res) => {
     if (doc.error) throw doc.error;
     doc.phone = parseInt(doc.phone);
 
-    if(doc.role == undefined) doc.role = "customer";
+    if (doc.role == undefined) doc.role = "customer";
     doc.role = doc.role.toLowerCase();
     if (doc.role == "admin") {
       if (req.user == undefined || req.user.role != "admin") {
