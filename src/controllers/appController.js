@@ -124,3 +124,32 @@ exports.userDelete = async (req, res) => {
       .send(utils.responseMsg(errorMsg.internalServerError));
   }
 };
+
+/**
+ * @description add book controller.
+ * @function addBook
+ */
+ exports.addBook = async (req, res) => {
+   try {
+     const doc = req.body;
+     const bookData = await mongoose.model("book").findOne({ name: doc.name });
+     if(bookData == null) {
+       if(doc.bookCopies == 0) doc.availability = false;
+       const data = await mongoose.model("book").create(doc);
+  
+       const msg = {
+         message: "Book added",
+         data: data
+       };
+       return res.send(utils.responseMsg(false, true, msg));
+     } else { 
+       const obj = { message: "Book already Existed" }
+       return res.send(utils.responseMsg(true, false, obj));
+     }
+   } catch (err) {
+    console.log("ERROR", err.stack);
+    return res
+      .status(500)
+      .send(utils.responseMsg(true, false, err));
+   }
+ };
