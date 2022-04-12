@@ -153,3 +153,27 @@ exports.userDelete = async (req, res) => {
       .send(utils.responseMsg(true, false, err));
    }
  };
+
+/**
+ * @description update book controller.
+ * @function updateBook
+ */
+ exports.updateBook = async (req, res) => {
+   try {
+     const doc = req.body;
+     const data = await mongoose.model("book").findOne({_id: req.params.id});
+     if(data != null) {
+       if(doc.bookCopies == 0) doc.availability = false;
+       await mongoose.model("book").updateOne({_id: req.params.id},{$set: doc});
+   
+       const msg = { message: "Book updated" };
+       return res.send(utils.responseMsg(false, true, msg));
+     }
+     return res.status(404).send(utils.responseMsg(errorMsg.dataNotFound));
+   } catch (err) {
+    console.log("ERROR", err.stack);
+    return res
+      .status(500)
+      .send(utils.responseMsg(true, false, err));
+   }
+ };
