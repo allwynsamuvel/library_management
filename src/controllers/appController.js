@@ -41,8 +41,10 @@ exports.userProfile = async (req, res) => {
  */
 exports.userUpdate = async (req, res) => {
   try {
+    req.body.phone = req.body.phone.toString();
     const doc = await joiSchema.validateAsync(req.body);
     if (doc.error) throw doc.error;
+    doc.phone = parseInt(doc.phone);
 
     const userId = req.user.userId;
     const userData = await mongoose.model("user").findOne({ _id: userId });
