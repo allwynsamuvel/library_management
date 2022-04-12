@@ -43,8 +43,10 @@ exports.login = async (req, res) => {
  */
 exports.signup = async (req, res) => {
   try {
+    req.body.phone = req.body.phone.toString();
     const doc = await joiSchema.validateAsync(req.body);
     if (doc.error) throw doc.error;
+    doc.phone = parseInt(doc.phone);
 
     const bearerHeader = req.headers["authorization"];
     if (bearerHeader) {
@@ -90,7 +92,6 @@ exports.signup = async (req, res) => {
       if (doc.email == userExist.email) errMsg.push("email already existed");
       if (doc.phone == userExist.phone) errMsg.push("phone already existed");
       const msg = {
-        message: "User Existed",
         errors: errMsg,
       };
       return res.status(409).send(utils.responseMsg(true, false, msg));
