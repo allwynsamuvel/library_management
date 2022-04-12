@@ -95,20 +95,6 @@ exports.userDelete = async (req, res) => {
       .model("user")
       .findOne({ _id: req.user.userId });
     if (userData) {
-      if (userData.role == "admin") {
-        const uData = await mongoose
-          .model("user")
-          .findOne({ _id: req.params.id });
-
-        console.log(uData);
-        if (uData != null) {
-          await mongoose.model("user").deleteOne({ _id: uData._id });
-          const msg = "User Deleted";
-          return res.send(utils.responseMsg(false, true, msg));
-        }
-        res.status(404).send(utils.responseMsg(errorMsg.dataNotFound));
-      }
-
       if (userData.role == "customer") {
         await mongoose.model("user").deleteOne({ _id: req.user.userId });
         const msg = "User Deleted";
