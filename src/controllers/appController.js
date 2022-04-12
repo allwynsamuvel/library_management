@@ -199,3 +199,36 @@ exports.userDelete = async (req, res) => {
       .send(utils.responseMsg(true, false, err));
    }
  };
+
+/**
+ * @description book search controller.
+ * @function bookSearch
+ */
+ exports.bookSearch = async (req, res) => {
+   try {
+     if(req.params.option == "name") {
+      const data = await mongoose.model("book").find({name: req.params.searchQuery});
+      if(data.length != 0) return res.send(utils.responseMsg(false, true, data)); 
+      else return res.status(404).send(utils.responseMsg(errorMsg.dataNotFound));
+     }
+     
+     if(req.params.option == "author") {
+      const data = await
+       mongoose.model("book").find({author: req.params.searchQuery});
+      if(data.length != 0) return res.send(utils.responseMsg(false, true, data)); 
+      else return res.status(404).send(utils.responseMsg(errorMsg.dataNotFound));
+     }
+
+     if(req.params.option == "category") {
+      const data = await mongoose.model("book").find({category: req.params.searchQuery});
+      if(data.length != 0) return res.send(utils.responseMsg(false, true, data)); 
+      else return res.status(404).send(utils.responseMsg(errorMsg.dataNotFound));
+     }
+     return res.status(401).send(utils.responseMsg(errorMsg.unauthorized));
+   } catch (err) {
+    console.log("ERROR", err.stack);
+    return res
+      .status(500)
+      .send(utils.responseMsg(true, false, err));
+   }
+ };
