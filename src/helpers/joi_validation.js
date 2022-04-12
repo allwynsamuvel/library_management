@@ -28,5 +28,5 @@ exports.joiSchema = joi.object({
       "string.pattern.base":
         "Enter Valid Password (Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character",
     }),
-  role: joi.string().default("customer"),
+  role: joi.string(),
 });
