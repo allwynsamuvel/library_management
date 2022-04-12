@@ -177,3 +177,25 @@ exports.userDelete = async (req, res) => {
       .send(utils.responseMsg(true, false, err));
    }
  };
+
+/**
+ * @description delete book controller.
+ * @function deleteBook
+ */
+ exports.deleteBook = async (req, res) => {
+   try {
+     const data =  await mongoose.model("book").findOne({_id: req.params.id});
+     if(data != null) {
+       await mongoose.model("book").deleteOne({_id: req.params.id});
+
+       const msg = { message: "Book deleted" };
+       return res.send(utils.responseMsg(false, true, msg));
+     }
+     return res.status(404).send(utils.responseMsg(errorMsg.dataNotFound));
+   } catch (err) {
+    console.log("ERROR", err.stack);
+    return res
+      .status(500)
+      .send(utils.responseMsg(true, false, err));
+   }
+ };
