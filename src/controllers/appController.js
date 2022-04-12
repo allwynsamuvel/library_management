@@ -31,7 +31,7 @@ exports.userProfile = async (req, res) => {
     return res.status(401).send(utils.responseMsg(errorMsg.unauthorized));
   } catch (err) {
     console.log("ERROR", err.stack);
-    return res.status(400).send(utils.responseMsg(true, false, err));
+    return res.status(500).send(utils.responseMsg(true, false, err));
   }
 };
 
@@ -41,10 +41,10 @@ exports.userProfile = async (req, res) => {
  */
 exports.userUpdate = async (req, res) => {
   try {
-    req.body.phone = req.body.phone.toString();
+    if(req.body.phone != undefined) req.body.phone = req.body.phone.toString();
     const doc = await joiSchema.validateAsync(req.body);
     if (doc.error) throw doc.error;
-    doc.phone = parseInt(doc.phone);
+    if(doc.phone != undefined) doc.phone = parseInt(doc.phone);
 
     const userId = req.user.userId;
     const userData = await mongoose.model("user").findOne({ _id: userId });
@@ -106,7 +106,7 @@ exports.userDelete = async (req, res) => {
     console.log("ERROR", err.stack);
     return res
       .status(500)
-      .send(utils.responseMsg(errorMsg.internalServerError));
+      .send(utils.responseMsg(true, false, err));
   }
 };
 
