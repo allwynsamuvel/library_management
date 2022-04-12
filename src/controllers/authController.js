@@ -33,7 +33,7 @@ exports.login = async (req, res) => {
     console.log("ERROR", err.stack);
     return res
       .status(500)
-      .send(utils.responseMsg(errorMsg.internalServerError));
+      .send(utils.responseMsg(true, false, err));
   }
 };
 
@@ -47,22 +47,6 @@ exports.signup = async (req, res) => {
     const doc = await joiSchema.validateAsync(req.body);
     if (doc.error) throw doc.error;
     doc.phone = parseInt(doc.phone);
-
-    const bearerHeader = req.headers["authorization"];
-    if (bearerHeader) {
-      const token = bearerHeader.split(" ")[1];
-
-      const token_data = jwt.verify(token, process.env.JWT_SECRET);
-      req.user = token_data;
-    }
-
-    if (req.user != undefined && req.user.role == "customer") {
-      const msg = {
-        error: "unauthorized",
-        message: "Customer not allowed to create other user",
-      };
-      return res.status(401).send(utils.responseMsg(true, false, msg));
-    }
 
     doc.role = doc.role.toLowerCase();
     if (doc.role == "admin") {
@@ -80,6 +64,7 @@ exports.signup = async (req, res) => {
     });
     if (userExist == null) {
       doc.password = await bcrypt.hash(doc.password, 10);
+      if(doc.role == undefined) doc.role = "customer";
       const userData = await mongoose.model("user").create(doc);
 
       const msg = {
