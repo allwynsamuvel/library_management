@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
 const errorMsg = require("../helpers/errorMessage").errorMessages;
+const { secret } = require("../config/config").jwt;
+
 /**
  * Pass Object Or Array Or String Or Number and find if it is empty or not, Null Or Undefined also gives false
  * @param  {Any} data data to be checked against
@@ -77,7 +79,7 @@ exports.tokenVerify = (role) => {
     if (bearerHeader == null) return res.status(401).send(responseMsg(errorMsg.unauthorized));
     const token = bearerHeader.split(" ")[1];
   
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    jwt.verify(token, secret, (err, user) => {
       if (err) return res.status(401).send(responseMsg(errorMsg.unauthorized));
   
       if (role == "admin") {
