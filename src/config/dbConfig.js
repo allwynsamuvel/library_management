@@ -1,13 +1,13 @@
 // User define DB Creadentials
-const dbCredentials = require('./config').db;
-const database = process.env.DATABASE_DRIVER || '';
+// const dbCredentials = require('./config').db;`
+const database = process.env.DATABASE_DRIVER || 'mongodb';
 
 if (database.toLowerCase() === 'mongodb') {
 
   //Bring in the mongoose module
   const mongoose = require('mongoose');
-  const { url, name } = dbCredentials.noSqlDbConfig;
-  const dbURI = url + name;
+  // const { url, name } = dbCredentials.noSqlDbConfig;
+  const dbURI = "mongodb+srv://allwynaxioned:Admin@cluster0.ccu5s.mongodb.net/librarydb?retryWrites=true&w=majority";
 
   //console to check what is the dbURI refers to
   console.log('Database URL is => ', dbURI);
