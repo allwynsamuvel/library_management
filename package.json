@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "library management system api",
   "main": "app.js",
+  "engines": {
+    "node": "14.x"
+  },
   "directories": {
     "test": "test"
   },
@@ -11,14 +14,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Allwyn123/library_management.git"
+    "url": "git+https://github.com/allwynaxioned/library_management.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Allwyn123/library_management/issues"
+    "url": "https://github.com/allwynaxioned/library_management/issues"
   },
-  "homepage": "https://github.com/Allwyn123/library_management#readme",
+  "homepage": "https://github.com/allwynaxioned/library_management#readme",
   "dependencies": {
     "bcrypt": "^5.0.1",
     "body-parser": "^1.20.0",
