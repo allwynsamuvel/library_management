@@ -2,7 +2,7 @@
   "name": "library_management",
   "version": "1.0.0",
   "description": "library management system api",
-  "main": "app.js",
+  "main": "index.js",
   "engines": {
     "node": "14.x"
   },
